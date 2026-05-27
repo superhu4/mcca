@@ -1,153 +1,183 @@
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cinzel:wght@400;500&display=swap');
-  :root {
-    --bg: var(--color-background-primary);
-    --bg2: var(--color-background-secondary);
-    --border: var(--color-border-tertiary);
-    --text: var(--color-text-primary);
-    --muted: var(--color-text-secondary);
-    --gold: #B8902A;
-    --gold-light: #F5E9C8;
-    --gold-faint: #FBF5E6;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'EB Garamond', Georgia, serif; }
-  #app { padding: 1.5rem 0; max-width: 660px; }
-  h1 { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 500; color: var(--gold); letter-spacing: 0.04em; margin-bottom: 4px; }
-  .subtitle { font-size: 14px; color: var(--muted); font-style: italic; margin-bottom: 1.5rem; }
-  .progress-bar-outer { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 99px; height: 8px; margin-bottom: 6px; overflow: hidden; }
-  .progress-bar-inner { background: var(--gold); height: 100%; border-radius: 99px; transition: width 0.4s ease; }
-  .progress-label { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
-  .week-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
-  .week-tab { font-family: 'Cinzel', serif; font-size: 11px; font-weight: 400; padding: 5px 13px; border-radius: 99px; border: 0.5px solid var(--border); background: var(--bg); color: var(--muted); cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
-  .week-tab:hover { border-color: var(--gold); color: var(--gold); }
-  .week-tab.active { background: var(--gold); color: #fff; border-color: var(--gold); }
-  .week-title { font-family: 'Cinzel', serif; font-size: 13px; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 1rem; }
-  .day-card { border: 0.5px solid var(--border); border-radius: var(--border-radius-lg); padding: 0.85rem 1.1rem; margin-bottom: 10px; background: var(--bg); transition: border-color 0.2s; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
-  .day-card:hover { border-color: var(--gold); }
-  .day-card.done { background: var(--gold-faint, #FBF5E6); border-color: var(--gold); }
-  .check-circle { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; transition: all 0.2s; }
-  .day-card.done .check-circle { background: var(--gold); border-color: var(--gold); }
-  .check-icon { display: none; }
-  .day-card.done .check-icon { display: block; }
-  .check-empty { display: block; }
-  .day-card.done .check-empty { display: none; }
-  .day-info { flex: 1; }
-  .day-label { font-family: 'Cinzel', serif; font-size: 11px; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 2px; }
-  .day-passage { font-size: 17px; font-weight: 400; color: var(--text); line-height: 1.3; }
-  .day-desc { font-size: 13px; font-style: italic; color: var(--muted); margin-top: 3px; }
-  .reset-btn { margin-top: 1.5rem; font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.05em; padding: 7px 18px; border: 0.5px solid var(--border); border-radius: 99px; background: none; color: var(--muted); cursor: pointer; transition: all 0.15s; }
-  .reset-btn:hover { border-color: var(--gold); color: var(--gold); }
+.bp-wrap { font-family: var(--font-sans); font-size: 15px; color: var(--color-text-primary); padding: 1rem 0; }
+.bp-week-radios { display: none; }
+.bp-day-checks { display: none; }
+.bp-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.bp-tab { padding: 5px 14px; border: 0.5px solid var(--color-border-tertiary); border-radius: 99px; cursor: pointer; font-size: 13px; color: var(--color-text-secondary); }
+#w1:checked ~ .bp-tabs label[for=w1],
+#w2:checked ~ .bp-tabs label[for=w2],
+#w3:checked ~ .bp-tabs label[for=w3],
+#w4:checked ~ .bp-tabs label[for=w4] { border-color: var(--color-text-primary); color: var(--color-text-primary); }
+.bp-weeks { }
+.bp-week { display: none; }
+#w1:checked ~ .bp-weeks .bp-week-1,
+#w2:checked ~ .bp-weeks .bp-week-2,
+#w3:checked ~ .bp-weeks .bp-week-3,
+#w4:checked ~ .bp-weeks .bp-week-4 { display: block; }
+.bp-week-heading { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1rem; }
+.bp-day { display: flex; align-items: flex-start; gap: 10px; padding: 0.75rem 1rem; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); margin-bottom: 8px; cursor: pointer; }
+.bp-day:hover { border-color: var(--color-border-secondary); }
+.bp-circle { width: 18px; height: 18px; border-radius: 50%; border: 0.5px solid var(--color-border-secondary); flex-shrink: 0; margin-top: 2px; }
+.bp-day-text { }
+.bp-passage { font-size: 15px; line-height: 1.3; }
+.bp-desc { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+
+#d1:checked ~ .bp-weeks .bp-week-1 label[for=d1] .bp-circle,
+#d2:checked ~ .bp-weeks .bp-week-1 label[for=d2] .bp-circle,
+#d3:checked ~ .bp-weeks .bp-week-1 label[for=d3] .bp-circle,
+#d4:checked ~ .bp-weeks .bp-week-1 label[for=d4] .bp-circle,
+#d5:checked ~ .bp-weeks .bp-week-1 label[for=d5] .bp-circle,
+#d6:checked ~ .bp-weeks .bp-week-1 label[for=d6] .bp-circle,
+#d7:checked ~ .bp-weeks .bp-week-1 label[for=d7] .bp-circle,
+#d8:checked ~ .bp-weeks .bp-week-2 label[for=d8] .bp-circle,
+#d9:checked ~ .bp-weeks .bp-week-2 label[for=d9] .bp-circle,
+#d10:checked ~ .bp-weeks .bp-week-2 label[for=d10] .bp-circle,
+#d11:checked ~ .bp-weeks .bp-week-2 label[for=d11] .bp-circle,
+#d12:checked ~ .bp-weeks .bp-week-2 label[for=d12] .bp-circle,
+#d13:checked ~ .bp-weeks .bp-week-2 label[for=d13] .bp-circle,
+#d14:checked ~ .bp-weeks .bp-week-2 label[for=d14] .bp-circle,
+#d15:checked ~ .bp-weeks .bp-week-3 label[for=d15] .bp-circle,
+#d16:checked ~ .bp-weeks .bp-week-3 label[for=d16] .bp-circle,
+#d17:checked ~ .bp-weeks .bp-week-3 label[for=d17] .bp-circle,
+#d18:checked ~ .bp-weeks .bp-week-3 label[for=d18] .bp-circle,
+#d19:checked ~ .bp-weeks .bp-week-3 label[for=d19] .bp-circle,
+#d20:checked ~ .bp-weeks .bp-week-3 label[for=d20] .bp-circle,
+#d21:checked ~ .bp-weeks .bp-week-3 label[for=d21] .bp-circle,
+#d22:checked ~ .bp-weeks .bp-week-4 label[for=d22] .bp-circle,
+#d23:checked ~ .bp-weeks .bp-week-4 label[for=d23] .bp-circle,
+#d24:checked ~ .bp-weeks .bp-week-4 label[for=d24] .bp-circle,
+#d25:checked ~ .bp-weeks .bp-week-4 label[for=d25] .bp-circle,
+#d26:checked ~ .bp-weeks .bp-week-4 label[for=d26] .bp-circle,
+#d27:checked ~ .bp-weeks .bp-week-4 label[for=d27] .bp-circle,
+#d28:checked ~ .bp-weeks .bp-week-4 label[for=d28] .bp-circle { background: var(--color-text-primary); border-color: var(--color-text-primary); }
+
+#d1:checked ~ .bp-weeks .bp-week-1 label[for=d1] .bp-passage,
+#d2:checked ~ .bp-weeks .bp-week-1 label[for=d2] .bp-passage,
+#d3:checked ~ .bp-weeks .bp-week-1 label[for=d3] .bp-passage,
+#d4:checked ~ .bp-weeks .bp-week-1 label[for=d4] .bp-passage,
+#d5:checked ~ .bp-weeks .bp-week-1 label[for=d5] .bp-passage,
+#d6:checked ~ .bp-weeks .bp-week-1 label[for=d6] .bp-passage,
+#d7:checked ~ .bp-weeks .bp-week-1 label[for=d7] .bp-passage,
+#d8:checked ~ .bp-weeks .bp-week-2 label[for=d8] .bp-passage,
+#d9:checked ~ .bp-weeks .bp-week-2 label[for=d9] .bp-passage,
+#d10:checked ~ .bp-weeks .bp-week-2 label[for=d10] .bp-passage,
+#d11:checked ~ .bp-weeks .bp-week-2 label[for=d11] .bp-passage,
+#d12:checked ~ .bp-weeks .bp-week-2 label[for=d12] .bp-passage,
+#d13:checked ~ .bp-weeks .bp-week-2 label[for=d13] .bp-passage,
+#d14:checked ~ .bp-weeks .bp-week-2 label[for=d14] .bp-passage,
+#d15:checked ~ .bp-weeks .bp-week-3 label[for=d15] .bp-passage,
+#d16:checked ~ .bp-weeks .bp-week-3 label[for=d16] .bp-passage,
+#d17:checked ~ .bp-weeks .bp-week-3 label[for=d17] .bp-passage,
+#d18:checked ~ .bp-weeks .bp-week-3 label[for=d18] .bp-passage,
+#d19:checked ~ .bp-weeks .bp-week-3 label[for=d19] .bp-passage,
+#d20:checked ~ .bp-weeks .bp-week-3 label[for=d20] .bp-passage,
+#d21:checked ~ .bp-weeks .bp-week-3 label[for=d21] .bp-passage,
+#d22:checked ~ .bp-weeks .bp-week-4 label[for=d22] .bp-passage,
+#d23:checked ~ .bp-weeks .bp-week-4 label[for=d23] .bp-passage,
+#d24:checked ~ .bp-weeks .bp-week-4 label[for=d24] .bp-passage,
+#d25:checked ~ .bp-weeks .bp-week-4 label[for=d25] .bp-passage,
+#d26:checked ~ .bp-weeks .bp-week-4 label[for=d26] .bp-passage,
+#d27:checked ~ .bp-weeks .bp-week-4 label[for=d27] .bp-passage,
+#d28:checked ~ .bp-weeks .bp-week-4 label[for=d28] .bp-passage { color: var(--color-text-secondary); text-decoration: line-through; }
+
+.bp-complete { display: none; font-size: 13px; color: var(--color-text-secondary); margin-top: 0.75rem; }
+.bp-week-1:has(label[for=d1] input):has(#d1:checked) { color: red; }
+
+.bp-week-1:has(label[for=d1]):has(label[for=d2]):has(label[for=d3]):has(label[for=d4]):has(label[for=d5]):has(label[for=d6]):has(label[for=d7]) .bp-complete { display: none; }
+
+#d1:checked ~ #d2:checked { color: red; }
 </style>
-<h2 class="sr-only">Interactive 4-week Bible reading plan with daily checkoff and progress tracking</h2>
-<div id="app">
-  <h1>Daily Scripture</h1>
-  <p class="subtitle">A four-week journey through the Word</p>
-  <div class="progress-bar-outer"><div class="progress-bar-inner" id="prog-bar" style="width:0%"></div></div>
-  <p class="progress-label" id="prog-label">0 of 28 readings completed</p>
-  <div class="week-tabs" id="week-tabs"></div>
-  <p class="week-title" id="week-title"></p>
-  <div id="days-list"></div>
-  <button class="reset-btn" onclick="resetAll()">Reset all progress</button>
+
+<div class="bp-wrap">
+  <h2 class="sr-only">CSS-only Bible reading plan with four tabbed weeks and checkable daily readings</h2>
+
+  <input class="bp-week-radios" type="radio" name="week" id="w1" checked>
+  <input class="bp-week-radios" type="radio" name="week" id="w2">
+  <input class="bp-week-radios" type="radio" name="week" id="w3">
+  <input class="bp-week-radios" type="radio" name="week" id="w4">
+
+  <input class="bp-day-checks" type="checkbox" id="d1">
+  <input class="bp-day-checks" type="checkbox" id="d2">
+  <input class="bp-day-checks" type="checkbox" id="d3">
+  <input class="bp-day-checks" type="checkbox" id="d4">
+  <input class="bp-day-checks" type="checkbox" id="d5">
+  <input class="bp-day-checks" type="checkbox" id="d6">
+  <input class="bp-day-checks" type="checkbox" id="d7">
+  <input class="bp-day-checks" type="checkbox" id="d8">
+  <input class="bp-day-checks" type="checkbox" id="d9">
+  <input class="bp-day-checks" type="checkbox" id="d10">
+  <input class="bp-day-checks" type="checkbox" id="d11">
+  <input class="bp-day-checks" type="checkbox" id="d12">
+  <input class="bp-day-checks" type="checkbox" id="d13">
+  <input class="bp-day-checks" type="checkbox" id="d14">
+  <input class="bp-day-checks" type="checkbox" id="d15">
+  <input class="bp-day-checks" type="checkbox" id="d16">
+  <input class="bp-day-checks" type="checkbox" id="d17">
+  <input class="bp-day-checks" type="checkbox" id="d18">
+  <input class="bp-day-checks" type="checkbox" id="d19">
+  <input class="bp-day-checks" type="checkbox" id="d20">
+  <input class="bp-day-checks" type="checkbox" id="d21">
+  <input class="bp-day-checks" type="checkbox" id="d22">
+  <input class="bp-day-checks" type="checkbox" id="d23">
+  <input class="bp-day-checks" type="checkbox" id="d24">
+  <input class="bp-day-checks" type="checkbox" id="d25">
+  <input class="bp-day-checks" type="checkbox" id="d26">
+  <input class="bp-day-checks" type="checkbox" id="d27">
+  <input class="bp-day-checks" type="checkbox" id="d28">
+
+  <div class="bp-tabs">
+    <label class="bp-tab" for="w1">Week 1</label>
+    <label class="bp-tab" for="w2">Week 2</label>
+    <label class="bp-tab" for="w3">Week 3</label>
+    <label class="bp-tab" for="w4">Week 4</label>
+  </div>
+
+  <div class="bp-weeks">
+
+    <div class="bp-week bp-week-1">
+      <p class="bp-week-heading">In the Beginning</p>
+      <label class="bp-day" for="d1"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Genesis 1–2</span><span class="bp-desc">Creation of the heavens and earth</span></span></label>
+      <label class="bp-day" for="d2"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Genesis 3–4</span><span class="bp-desc">The Fall and its consequences</span></span></label>
+      <label class="bp-day" for="d3"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Genesis 6–9</span><span class="bp-desc">Noah and the great flood</span></span></label>
+      <label class="bp-day" for="d4"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Psalm 1 & 19</span><span class="bp-desc">The blessed life; God's glory in creation</span></span></label>
+      <label class="bp-day" for="d5"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">John 1:1–18</span><span class="bp-desc">The Word made flesh</span></span></label>
+      <label class="bp-day" for="d6"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Romans 8</span><span class="bp-desc">Life in the Spirit</span></span></label>
+      <label class="bp-day" for="d7"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Psalm 23 & 24</span><span class="bp-desc">The Lord is my shepherd</span></span></label>
+    </div>
+
+    <div class="bp-week bp-week-2">
+      <p class="bp-week-heading">Covenant & Law</p>
+      <label class="bp-day" for="d8"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Exodus 19–20</span><span class="bp-desc">Mount Sinai; the Ten Commandments</span></span></label>
+      <label class="bp-day" for="d9"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Exodus 32–34</span><span class="bp-desc">The golden calf and covenant renewed</span></span></label>
+      <label class="bp-day" for="d10"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Deuteronomy 6–8</span><span class="bp-desc">Love the Lord with all your heart</span></span></label>
+      <label class="bp-day" for="d11"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Joshua 1–2</span><span class="bp-desc">Be strong and courageous</span></span></label>
+      <label class="bp-day" for="d12"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Psalm 119:1–80</span><span class="bp-desc">The greatness of God's Word</span></span></label>
+      <label class="bp-day" for="d13"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Matthew 5–7</span><span class="bp-desc">The Sermon on the Mount</span></span></label>
+      <label class="bp-day" for="d14"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Galatians 3–4</span><span class="bp-desc">Faith and the law</span></span></label>
+    </div>
+
+    <div class="bp-week bp-week-3">
+      <p class="bp-week-heading">Kings & Prophets</p>
+      <label class="bp-day" for="d15"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">1 Samuel 16–17</span><span class="bp-desc">David anointed; David and Goliath</span></span></label>
+      <label class="bp-day" for="d16"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">2 Samuel 7</span><span class="bp-desc">God's covenant with David</span></span></label>
+      <label class="bp-day" for="d17"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">1 Kings 18–19</span><span class="bp-desc">Elijah on Mount Carmel</span></span></label>
+      <label class="bp-day" for="d18"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Isaiah 40 & 53</span><span class="bp-desc">Comfort my people; the suffering servant</span></span></label>
+      <label class="bp-day" for="d19"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Jeremiah 31</span><span class="bp-desc">The new covenant promised</span></span></label>
+      <label class="bp-day" for="d20"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Daniel 6</span><span class="bp-desc">Daniel in the lions' den</span></span></label>
+      <label class="bp-day" for="d21"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Psalm 46 & 91</span><span class="bp-desc">God is our refuge and strength</span></span></label>
+    </div>
+
+    <div class="bp-week bp-week-4">
+      <p class="bp-week-heading">Gospel & New Creation</p>
+      <label class="bp-day" for="d22"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Luke 1–2</span><span class="bp-desc">The birth of Jesus</span></span></label>
+      <label class="bp-day" for="d23"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Luke 15</span><span class="bp-desc">The lost sheep, coin, and son</span></span></label>
+      <label class="bp-day" for="d24"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">John 11</span><span class="bp-desc">The resurrection of Lazarus</span></span></label>
+      <label class="bp-day" for="d25"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">John 17–19</span><span class="bp-desc">Jesus' prayer; the crucifixion</span></span></label>
+      <label class="bp-day" for="d26"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">John 20–21</span><span class="bp-desc">The resurrection appearances</span></span></label>
+      <label class="bp-day" for="d27"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Acts 2</span><span class="bp-desc">The day of Pentecost</span></span></label>
+      <label class="bp-day" for="d28"><span class="bp-circle"></span><span class="bp-day-text"><span class="bp-passage">Revelation 21–22</span><span class="bp-desc">The new heaven and the new earth</span></span></label>
+    </div>
+
+  </div>
 </div>
-<script>
-const plan = [
-  { week: 1, title: "Week 1 — In the Beginning", days: [
-    { label: "Day 1", passage: "Genesis 1–2", desc: "Creation of the heavens and earth" },
-    { label: "Day 2", passage: "Genesis 3–4", desc: "The Fall and its consequences" },
-    { label: "Day 3", passage: "Genesis 6–9", desc: "Noah and the great flood" },
-    { label: "Day 4", passage: "Psalm 1 & 19", desc: "The blessed life; God's glory in creation" },
-    { label: "Day 5", passage: "John 1:1–18", desc: "The Word made flesh" },
-    { label: "Day 6", passage: "Romans 8", desc: "Life in the Spirit" },
-    { label: "Day 7", passage: "Psalm 23 & 24", desc: "The Lord is my shepherd" },
-  ]},
-  { week: 2, title: "Week 2 — Covenant & Law", days: [
-    { label: "Day 8", passage: "Exodus 19–20", desc: "Mount Sinai; the Ten Commandments" },
-    { label: "Day 9", passage: "Exodus 32–34", desc: "The golden calf and covenant renewed" },
-    { label: "Day 10", passage: "Deuteronomy 6–8", desc: "Love the Lord with all your heart" },
-    { label: "Day 11", passage: "Joshua 1–2", desc: "Be strong and courageous" },
-    { label: "Day 12", passage: "Psalm 119:1–80", desc: "The greatness of God's Word" },
-    { label: "Day 13", passage: "Matthew 5–7", desc: "The Sermon on the Mount" },
-    { label: "Day 14", passage: "Galatians 3–4", desc: "Faith and the law" },
-  ]},
-  { week: 3, title: "Week 3 — Kings & Prophets", days: [
-    { label: "Day 15", passage: "1 Samuel 16–17", desc: "David anointed; David and Goliath" },
-    { label: "Day 16", passage: "2 Samuel 7", desc: "God's covenant with David" },
-    { label: "Day 17", passage: "1 Kings 18–19", desc: "Elijah on Mount Carmel" },
-    { label: "Day 18", passage: "Isaiah 40 & 53", desc: "Comfort my people; the suffering servant" },
-    { label: "Day 19", passage: "Jeremiah 31", desc: "The new covenant promised" },
-    { label: "Day 20", passage: "Daniel 6", desc: "Daniel in the lions' den" },
-    { label: "Day 21", passage: "Psalm 46 & 91", desc: "God is our refuge and strength" },
-  ]},
-  { week: 4, title: "Week 4 — Gospel & New Creation", days: [
-    { label: "Day 22", passage: "Luke 1–2", desc: "The birth of Jesus" },
-    { label: "Day 23", passage: "Luke 15", desc: "The lost sheep, coin, and son" },
-    { label: "Day 24", passage: "John 11", desc: "The resurrection of Lazarus" },
-    { label: "Day 25", passage: "John 17–19", desc: "Jesus' prayer; the crucifixion" },
-    { label: "Day 26", passage: "John 20–21", desc: "The resurrection appearances" },
-    { label: "Day 27", passage: "Acts 2", desc: "The day of Pentecost" },
-    { label: "Day 28", passage: "Revelation 21–22", desc: "The new heaven and the new earth" },
-  ]},
-];
-
-const STORAGE_KEY = 'bible_plan_done';
-let done = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
-let activeWeek = 1;
-
-function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify([...done])); } catch(e){} }
-
-function getKey(w, d) { return `${w}-${d}`; }
-
-function renderTabs() {
-  const tabs = document.getElementById('week-tabs');
-  tabs.innerHTML = plan.map(w => `<button class="week-tab${w.week===activeWeek?' active':''}" onclick="setWeek(${w.week})">Week ${w.week}</button>`).join('');
-}
-
-function renderDays() {
-  const wData = plan.find(w => w.week === activeWeek);
-  document.getElementById('week-title').textContent = wData.title;
-  const list = document.getElementById('days-list');
-  list.innerHTML = wData.days.map((d, i) => {
-    const key = getKey(activeWeek, i);
-    const isDone = done.has(key);
-    return `<div class="day-card${isDone?' done':''}" onclick="toggle(${activeWeek},${i})" role="checkbox" aria-checked="${isDone}" tabindex="0">
-      <div class="check-circle">
-        <svg class="check-icon" width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span class="check-empty" style="width:8px;height:8px;border-radius:50%;background:var(--border);display:block;"></span>
-      </div>
-      <div class="day-info">
-        <div class="day-label">${d.label}</div>
-        <div class="day-passage">${d.passage}</div>
-        <div class="day-desc">${d.desc}</div>
-      </div>
-    </div>`;
-  }).join('');
-  list.querySelectorAll('.day-card').forEach(el => {
-    el.addEventListener('keydown', e => { if(e.key===' '||e.key==='Enter'){e.preventDefault();el.click();} });
-  });
-}
-
-function renderProgress() {
-  const total = 28, n = done.size;
-  document.getElementById('prog-bar').style.width = (n/total*100).toFixed(1)+'%';
-  document.getElementById('prog-label').textContent = `${n} of ${total} readings completed`;
-}
-
-function setWeek(w) { activeWeek = w; renderTabs(); renderDays(); }
-
-function toggle(w, i) {
-  const key = getKey(w, i);
-  if (done.has(key)) done.delete(key); else done.add(key);
-  save();
-  renderDays();
-  renderProgress();
-}
-
-function resetAll() {
-  done.clear(); save();
-  renderDays(); renderProgress();
-}
-
-renderTabs(); renderDays(); renderProgress();
-</script>
