@@ -1,0 +1,153 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cinzel:wght@400;500&display=swap');
+  :root {
+    --bg: var(--color-background-primary);
+    --bg2: var(--color-background-secondary);
+    --border: var(--color-border-tertiary);
+    --text: var(--color-text-primary);
+    --muted: var(--color-text-secondary);
+    --gold: #B8902A;
+    --gold-light: #F5E9C8;
+    --gold-faint: #FBF5E6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'EB Garamond', Georgia, serif; }
+  #app { padding: 1.5rem 0; max-width: 660px; }
+  h1 { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 500; color: var(--gold); letter-spacing: 0.04em; margin-bottom: 4px; }
+  .subtitle { font-size: 14px; color: var(--muted); font-style: italic; margin-bottom: 1.5rem; }
+  .progress-bar-outer { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 99px; height: 8px; margin-bottom: 6px; overflow: hidden; }
+  .progress-bar-inner { background: var(--gold); height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+  .progress-label { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
+  .week-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .week-tab { font-family: 'Cinzel', serif; font-size: 11px; font-weight: 400; padding: 5px 13px; border-radius: 99px; border: 0.5px solid var(--border); background: var(--bg); color: var(--muted); cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+  .week-tab:hover { border-color: var(--gold); color: var(--gold); }
+  .week-tab.active { background: var(--gold); color: #fff; border-color: var(--gold); }
+  .week-title { font-family: 'Cinzel', serif; font-size: 13px; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 1rem; }
+  .day-card { border: 0.5px solid var(--border); border-radius: var(--border-radius-lg); padding: 0.85rem 1.1rem; margin-bottom: 10px; background: var(--bg); transition: border-color 0.2s; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+  .day-card:hover { border-color: var(--gold); }
+  .day-card.done { background: var(--gold-faint, #FBF5E6); border-color: var(--gold); }
+  .check-circle { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; transition: all 0.2s; }
+  .day-card.done .check-circle { background: var(--gold); border-color: var(--gold); }
+  .check-icon { display: none; }
+  .day-card.done .check-icon { display: block; }
+  .check-empty { display: block; }
+  .day-card.done .check-empty { display: none; }
+  .day-info { flex: 1; }
+  .day-label { font-family: 'Cinzel', serif; font-size: 11px; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 2px; }
+  .day-passage { font-size: 17px; font-weight: 400; color: var(--text); line-height: 1.3; }
+  .day-desc { font-size: 13px; font-style: italic; color: var(--muted); margin-top: 3px; }
+  .reset-btn { margin-top: 1.5rem; font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.05em; padding: 7px 18px; border: 0.5px solid var(--border); border-radius: 99px; background: none; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+  .reset-btn:hover { border-color: var(--gold); color: var(--gold); }
+</style>
+<h2 class="sr-only">Interactive 4-week Bible reading plan with daily checkoff and progress tracking</h2>
+<div id="app">
+  <h1>Daily Scripture</h1>
+  <p class="subtitle">A four-week journey through the Word</p>
+  <div class="progress-bar-outer"><div class="progress-bar-inner" id="prog-bar" style="width:0%"></div></div>
+  <p class="progress-label" id="prog-label">0 of 28 readings completed</p>
+  <div class="week-tabs" id="week-tabs"></div>
+  <p class="week-title" id="week-title"></p>
+  <div id="days-list"></div>
+  <button class="reset-btn" onclick="resetAll()">Reset all progress</button>
+</div>
+<script>
+const plan = [
+  { week: 1, title: "Week 1 — In the Beginning", days: [
+    { label: "Day 1", passage: "Genesis 1–2", desc: "Creation of the heavens and earth" },
+    { label: "Day 2", passage: "Genesis 3–4", desc: "The Fall and its consequences" },
+    { label: "Day 3", passage: "Genesis 6–9", desc: "Noah and the great flood" },
+    { label: "Day 4", passage: "Psalm 1 & 19", desc: "The blessed life; God's glory in creation" },
+    { label: "Day 5", passage: "John 1:1–18", desc: "The Word made flesh" },
+    { label: "Day 6", passage: "Romans 8", desc: "Life in the Spirit" },
+    { label: "Day 7", passage: "Psalm 23 & 24", desc: "The Lord is my shepherd" },
+  ]},
+  { week: 2, title: "Week 2 — Covenant & Law", days: [
+    { label: "Day 8", passage: "Exodus 19–20", desc: "Mount Sinai; the Ten Commandments" },
+    { label: "Day 9", passage: "Exodus 32–34", desc: "The golden calf and covenant renewed" },
+    { label: "Day 10", passage: "Deuteronomy 6–8", desc: "Love the Lord with all your heart" },
+    { label: "Day 11", passage: "Joshua 1–2", desc: "Be strong and courageous" },
+    { label: "Day 12", passage: "Psalm 119:1–80", desc: "The greatness of God's Word" },
+    { label: "Day 13", passage: "Matthew 5–7", desc: "The Sermon on the Mount" },
+    { label: "Day 14", passage: "Galatians 3–4", desc: "Faith and the law" },
+  ]},
+  { week: 3, title: "Week 3 — Kings & Prophets", days: [
+    { label: "Day 15", passage: "1 Samuel 16–17", desc: "David anointed; David and Goliath" },
+    { label: "Day 16", passage: "2 Samuel 7", desc: "God's covenant with David" },
+    { label: "Day 17", passage: "1 Kings 18–19", desc: "Elijah on Mount Carmel" },
+    { label: "Day 18", passage: "Isaiah 40 & 53", desc: "Comfort my people; the suffering servant" },
+    { label: "Day 19", passage: "Jeremiah 31", desc: "The new covenant promised" },
+    { label: "Day 20", passage: "Daniel 6", desc: "Daniel in the lions' den" },
+    { label: "Day 21", passage: "Psalm 46 & 91", desc: "God is our refuge and strength" },
+  ]},
+  { week: 4, title: "Week 4 — Gospel & New Creation", days: [
+    { label: "Day 22", passage: "Luke 1–2", desc: "The birth of Jesus" },
+    { label: "Day 23", passage: "Luke 15", desc: "The lost sheep, coin, and son" },
+    { label: "Day 24", passage: "John 11", desc: "The resurrection of Lazarus" },
+    { label: "Day 25", passage: "John 17–19", desc: "Jesus' prayer; the crucifixion" },
+    { label: "Day 26", passage: "John 20–21", desc: "The resurrection appearances" },
+    { label: "Day 27", passage: "Acts 2", desc: "The day of Pentecost" },
+    { label: "Day 28", passage: "Revelation 21–22", desc: "The new heaven and the new earth" },
+  ]},
+];
+
+const STORAGE_KEY = 'bible_plan_done';
+let done = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
+let activeWeek = 1;
+
+function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify([...done])); } catch(e){} }
+
+function getKey(w, d) { return `${w}-${d}`; }
+
+function renderTabs() {
+  const tabs = document.getElementById('week-tabs');
+  tabs.innerHTML = plan.map(w => `<button class="week-tab${w.week===activeWeek?' active':''}" onclick="setWeek(${w.week})">Week ${w.week}</button>`).join('');
+}
+
+function renderDays() {
+  const wData = plan.find(w => w.week === activeWeek);
+  document.getElementById('week-title').textContent = wData.title;
+  const list = document.getElementById('days-list');
+  list.innerHTML = wData.days.map((d, i) => {
+    const key = getKey(activeWeek, i);
+    const isDone = done.has(key);
+    return `<div class="day-card${isDone?' done':''}" onclick="toggle(${activeWeek},${i})" role="checkbox" aria-checked="${isDone}" tabindex="0">
+      <div class="check-circle">
+        <svg class="check-icon" width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="check-empty" style="width:8px;height:8px;border-radius:50%;background:var(--border);display:block;"></span>
+      </div>
+      <div class="day-info">
+        <div class="day-label">${d.label}</div>
+        <div class="day-passage">${d.passage}</div>
+        <div class="day-desc">${d.desc}</div>
+      </div>
+    </div>`;
+  }).join('');
+  list.querySelectorAll('.day-card').forEach(el => {
+    el.addEventListener('keydown', e => { if(e.key===' '||e.key==='Enter'){e.preventDefault();el.click();} });
+  });
+}
+
+function renderProgress() {
+  const total = 28, n = done.size;
+  document.getElementById('prog-bar').style.width = (n/total*100).toFixed(1)+'%';
+  document.getElementById('prog-label').textContent = `${n} of ${total} readings completed`;
+}
+
+function setWeek(w) { activeWeek = w; renderTabs(); renderDays(); }
+
+function toggle(w, i) {
+  const key = getKey(w, i);
+  if (done.has(key)) done.delete(key); else done.add(key);
+  save();
+  renderDays();
+  renderProgress();
+}
+
+function resetAll() {
+  done.clear(); save();
+  renderDays(); renderProgress();
+}
+
+renderTabs(); renderDays(); renderProgress();
+</script>
